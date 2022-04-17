@@ -1,8 +1,8 @@
 import React from 'react'
 import styled from 'styled-components';
-import {ShoppingCartOutlined,SearchOutlined,FavoriteBorderOutlined} from '@mui/icons-material';
-function Product() {
-    const Info=styled.div`
+import {ShoppingCartOutlined,SearchOutlined,FavoriteBorderOutlined, Co2Sharp} from '@mui/icons-material';
+import { Link } from 'react-router-dom';
+const Info=styled.div`
     opacity:0;
     height:100%;
     width:100%;
@@ -21,7 +21,7 @@ function Product() {
     const Container=styled.div`
     flex:1;
     // height:50vh;
-    // width:350px;
+    width:100%;
     margin:5px;
     min-width:280px;
     height:350px;
@@ -60,11 +60,16 @@ function Product() {
         transform:scale(1.2);
     }
     `
+function Product({product}) {
   return (
     <Container>
-        <Img src='/assets/img/products/hoodie.png'/>
+        <Img src={product.img}/>
         <Info>
-            <Icon><SearchOutlined/></Icon>
+        <Link to={`/product/${product._id}`}>
+            <Icon>
+                <SearchOutlined style={{textDecoration:'none',color:'black'}}/>
+                </Icon>
+                </Link>
             <Icon><ShoppingCartOutlined/></Icon>
             <Icon><FavoriteBorderOutlined/></Icon>
 

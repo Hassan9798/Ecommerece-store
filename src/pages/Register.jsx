@@ -158,7 +158,7 @@ function Register() {
                     </RightWrapper>
                 </Right>
             </Container>
-            <NewsLetter/>
+            {/* <NewsLetter/> */}
         </>
 
     )

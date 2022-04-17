@@ -1,10 +1,14 @@
 import { Add, Remove } from '@mui/icons-material';
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import Annoucements from '../components/Annoucements';
 import Navbar from '../components/Navbar';
 import NewsLetter from '../components/NewsLetter';
 import { mobile } from '../responsive';
+import { publicRequest } from '../makeRequest';
+import { useDispatch } from 'react-redux';
+import { addProduct } from '../redux/cartRedux';
 const Container = styled.div`
 width:100%;
 // background-color:yellow;
@@ -28,7 +32,9 @@ ${mobile({
 })}
 `
 const Image = styled.img`
-object-fit:cover;
+object-fit:contain;
+height:70vh;
+width:100%;
 ${mobile({
     height: '50vh',
     width: '80%',
@@ -151,35 +157,73 @@ font-weight:500;
 }
 `
 function Product() {
+    const location=useLocation();
+    const id=location.pathname.split('/')[2];
+    const [product,setProduct]=useState([]); 
+    const [quantity,setQuantity]=useState(1); 
+    const [size,setSize]=useState(''); 
+    const [color,setColor]=useState(''); 
+     const dispatch=useDispatch();
+    useEffect(()=>{
+        const getProduct=async()=>{
+        try{
+           
+                const res=await publicRequest.get(`/products/findproduct/${id}`)
+                setSize(res.data.size[0]);
+                setColor(res.data.color[0]);
+                setProduct(res.data);
+            
+        }
+        catch(err){
+            console.log(err);
+        }
+        }
+
+        getProduct();
+    },[id]);
+
+    const handleQuantity=(type)=>{
+        if(type==='inc'){
+            setQuantity(quantity+1);
+        }
+        else{
+          quantity > 1 && setQuantity(quantity-1);
+        }
+    };
+
+    const handleCart=(e)=>{
+        e.preventDefault();
+        dispatch(
+            addProduct({...product,quantity,size,color})
+        )
+    }
+
     return (
         <Container>
             <Navbar />
             <Annoucements />
             <Wrapper>
                 <ImgContainer>
-                    <Image src='/assets/img/products/hoodie.png' />
+                    <Image src={product.img} />
                 </ImgContainer>
                 <InfoContainer>
-                    <Title>Hoodie</Title>
-                    <Desc>A Sweat Shirt with a hood. Hoodies often include a muff sewn onto the lower front, and (usually) a drawstring to adjust the hood opening. It covers most of the head and neck and sometimes the face.</Desc>
-                    <Price>2000 PKR</Price>
+                    <Title>{product.title}</Title>
+                    <Desc>{product.desc}</Desc>
+                    <Price>{product.price}</Price>
                     <FilterContainer>
                         <Filter>
                             <FilterTitle>Color</FilterTitle>
-                            <FilterColor color='red' />
-                            <FilterColor color='yellow' />
-                            <FilterColor color='blue' />
+                            {product.color?.map((c)=>(
+                            <FilterColor color={c} key={c} onClick={()=>setColor(c)}/>
+                            ))}
                         </Filter>
-
-
                         <Filter>
                             <FilterTitle>Size</FilterTitle>
 
-                            <FilterSize>
-                                <FilterOption>Xl</FilterOption>
-                                <FilterOption>L</FilterOption>
-                                <FilterOption>M</FilterOption>
-                                <FilterOption>S</FilterOption>
+                            <FilterSize onChange={(e)=>{setSize(e.target.value)}}>
+                                {product.size?.map((s)=>(
+                                <FilterOption key={s}>{s}</FilterOption>
+                                ))}
                             </FilterSize>
 
                         </Filter>
@@ -187,11 +231,11 @@ function Product() {
                     </FilterContainer>
                     <AddContainer>
                         <AmountContainer>
-                            <Remove style={{ cursor: 'pointer' }} />
-                            <Amount>1</Amount>
-                            <Add style={{ cursor: 'pointer' }} />
+                            <Remove style={{ cursor: 'pointer' }} onClick={()=>handleQuantity('dec')}/>
+                            <Amount>{quantity}</Amount>
+                            <Add style={{ cursor: 'pointer' }} onClick={()=>handleQuantity('inc')} />
                         </AmountContainer>
-                        <AddButton>Add To Cart</AddButton>
+                        <AddButton onClick={handleCart}>Add To Cart</AddButton>
                     </AddContainer>
                 </InfoContainer>
 

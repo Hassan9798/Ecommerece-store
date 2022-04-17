@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import {mobile} from '../responsive';
 const Container=styled.div`
-
+width:100%;
 height:30px;
 background-color:teal;
 text-align:center;

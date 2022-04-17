@@ -7,7 +7,9 @@ import 'aos/dist/aos.css'
 import { mobile } from '../responsive';
 const Container=styled.div`
 display:flex;
+overflow: hidden;
 flex:wrap;
+// width:100%;
 padding:10px;
 justify-content:space-between;
 ${mobile({
@@ -16,16 +18,18 @@ ${mobile({
    })}
 `
 function Category() {
-  useEffect(()=>{
-    Aos.init();
-    },[])
+  // useEffect(()=>{
+  //   Aos.init();
+  //   },[])
   return (
-    <Container data-aos="flip-up" data-aos-offset="200">
+    // <div data-aos="flip-up" data-aos-offset="200" >
+    <Container >
         {CategoryList.map((item=>
             <CategoryItem item={item}/>
             ))}
         
     </Container>
+  
   )
 }
 

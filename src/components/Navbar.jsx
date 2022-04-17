@@ -2,9 +2,11 @@ import React from 'react'
 import styled from 'styled-components';
 import { Search,ShoppingCartOutlined } from '@mui/icons-material'
 import { Badge } from '@mui/material';
-import {Link} from 'react-router-dom';
+import {Link, Navigate, useNavigate} from 'react-router-dom';
 import { mobile } from '../responsive';
+import {useSelector} from 'react-redux';
 const Container = styled.div`
+width:100%;
 height:60px;
 position:sticky;
 top:0;
@@ -98,7 +100,11 @@ ${mobile({
     })}
 `
 function Navbar() {
+
+    const cart=useSelector(state=>state.cart)
+    const navigate=useNavigate();
     return (
+       
         
         <Container>
             <Wrapper>
@@ -117,8 +123,8 @@ function Navbar() {
                   <Link to='/login' style={{'textDecoration':'none','color':'black'}}>  <MenuItem>Login</MenuItem></Link>
                   <Link to='/register' style={{'textDecoration':'none','color':'black'}}> <MenuItem>Signup</MenuItem></Link>
                     <MenuItem>
-                    <Badge badgeContent={4} color="primary">
-                    <ShoppingCartOutlined color="action" />
+                    <Badge badgeContent={cart.quantity} color="primary">
+                   <ShoppingCartOutlined color="action" onClick={()=>navigate('/cart')}/>
                     </Badge>
                     </MenuItem>
                 </Right>

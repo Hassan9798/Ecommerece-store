@@ -3,10 +3,11 @@ import styled from 'styled-components';
 import Annoucements from '../components/Annoucements';
 import Navbar from '../components/Navbar';
 import NewsLetter from '../components/NewsLetter';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { mobile } from '../responsive';
-import { useSelector,useDispatch } from 'react-redux';
-import { LOGINSUCCESS } from '../actions/login';
+import { login } from '../redux/apiCalls';
+import { useDispatch, useSelector } from 'react-redux';
+import CircularProgress from '@mui/material/CircularProgress';
 const Container = styled.div`
 height: calc(100vh - 90px);
 display:flex;
@@ -106,12 +107,16 @@ border:1px solid #C0C0C0;
 background-color:lightpurple;
 border-radius:10px;
 cursor:pointer;
+font-size:auto;
 font-weight:bold;
 &:hover{
     background-color:#B0E0E6;
 };
 margin-bottom:20px;
-
+&:disabled{
+    cursor: not-allowed
+    color:#B0E0E6
+}
 `
 const Account = styled.span`
 font-size:10px;
@@ -124,21 +129,23 @@ ${mobile({
 })}
 
 `
+const Error=styled.span`
+color:red;
+`
 function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const dispatch = useDispatch();
-    const LoginEvent = (e) => {
+    const navigate=useNavigate();
+    const {isFetching,error} = useSelector(state=>state.user);
+    const loginEvent = (e) => {
         e.preventDefault();
-        console.log('buttonclicked')
         let user = {
             email,
             password
         }
-        dispatch(LOGINSUCCESS(user));
+        login(dispatch,user,navigate);
     }
-    const user=useSelector(state=>state.user);
-    console.log(user);
     return (
         <>
             <Navbar />
@@ -158,23 +165,24 @@ function Login() {
                                 <Inputs>
                                     <InputName>Email</InputName>
                                     <Input>
-                                        <InputField value={email} placeholder='Enter Email' onChange={(e) => setEmail(e.target.value)} />
+                                        <InputField  placeholder='Enter Email' type='email' value={email} onChange={(e)=>setEmail(e.target.value)} />
                                     </Input>
                                 </Inputs>
                                 <Inputs>
                                     <InputName>Password</InputName>
                                     <Input>
-                                        <InputField value={password} placeholder='Enter Password' onChange={(e) => setPassword(e.target.value)} />
+                                        <InputField placeholder='Enter Password' type='password' value={password} onChange={(e)=>setPassword(e.target.value)} />
                                     </Input>
                                 </Inputs>
-                                <Button type='submit' onClick={LoginEvent}>Login</Button>
+                                <Button type='submit' onClick={loginEvent}>{isFetching? <CircularProgress size="1rem" color="secondary" /> : 'Login'}</Button>
+                                { error && <Error>Something went wrong!</Error>}
                             </RightBottom>
                         </Form>
                         <Link to='/register' style={{ color: 'black' }}><Account>Not have an Account?</Account></Link>
                     </RightWrapper>
                 </Right>
             </Container>
-            <NewsLetter />
+            {/* <NewsLetter /> */}
         </>
 
     )
