@@ -2,7 +2,7 @@ export const CategoryList=[
     {id:1,
     img:'/assets/img/category.png',
     title:'CLOTHES',
-    cat:'clothes'
+    cat:'Clothes'
     },
     {id:1,
         img:'/assets/img/carcategory.png',
@@ -19,4 +19,5 @@ export const CategoryList=[
                 title:'WATCHES',
                 cat:'Watches'
                 },
+        
 ];

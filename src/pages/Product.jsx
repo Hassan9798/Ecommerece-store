@@ -197,14 +197,15 @@ function Product() {
             addProduct({...product,quantity,size,color})
         )
     }
-
+    const url='http://localhost:4000/';
+    
     return (
         <Container>
             <Navbar />
             <Annoucements />
             <Wrapper>
                 <ImgContainer>
-                    <Image src={product.img} />
+                    <Image src={url + product.img} />
                 </ImgContainer>
                 <InfoContainer>
                     <Title>{product.title}</Title>

@@ -5,6 +5,7 @@ import ProductList from './pages/ProductList';
 import Register from './pages/Register';
 import {BrowserRouter,Routes,Route, Navigate} from 'react-router-dom';
 import Product from './pages/Product';
+import {NoPage} from './components/NoPage';
 import { useSelector } from 'react-redux';
 function App() {
   const user=useSelector(state=>state.user.loggedInUser);
@@ -18,6 +19,7 @@ function App() {
         <Route path='/products/:category' element={<ProductList/>} />
         <Route path='/product/:id' element={<Product/>} />
         <Route path='/cart' element={<Cart/>} />
+        <Route path='*' element={<NoPage/>}/>
       </Routes>
       </BrowserRouter>
     </div>

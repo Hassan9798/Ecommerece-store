@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components';
 import Product from './Product';
+import Button from '@mui/material/Button';
+import Tooltip from '@mui/material/Tooltip';
 import axios from 'axios';
 const Container = styled.div`
 width:100%;
@@ -80,8 +82,11 @@ function Products({ cat, filters, sort }) {
           <Product key={product._id} product={product} />
         )) : products.slice(0,8)
                       .map((product) => (
-          <Product key={product._id} product={product} />
-        )) }
+                      
+                <Product key={product._id} product={product} />          
+        )) 
+                        
+        }
 
 
       </Wrapper>

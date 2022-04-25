@@ -58,7 +58,7 @@ font-weight:800;
 
 `
 function CategoryItem({ item }) {
-    
+    console.log(item);
     return (
         <Container>
             <Img src={item.img} />

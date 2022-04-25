@@ -3,9 +3,10 @@ import styled from 'styled-components';
 import Navbar from '../components/Navbar'
 import Annoucements from '../components/Annoucements'
 import { Add, Remove, SystemSecurityUpdate } from '@mui/icons-material';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import StripeCheckout from 'react-stripe-checkout';
 import { userRequest,publicRequest } from '../makeRequest';
+import { deleteProduct } from '../redux/cartRedux';
 import axios from 'axios';
 const Container = styled.div`
 `
@@ -83,6 +84,9 @@ color:white;
 border:none;
 font-weight:600;
 cursor:pointer;
+&:disabled{
+    cursor:not-allowed
+}
 `
 const Product = styled.div`
 display:flex;
@@ -147,7 +151,10 @@ height:1px;
 border:none;
 `
 function Cart() {
+    const url='http://localhost:4000/';
+    const dispatch=useDispatch();
     const cart = useSelector(state => state.cart)
+    const user=useSelector(state=>state.user.loggedInUser);
     const stripeKey="pk_test_51KocEsGzXR7JjkBpkPwXlIG54yeS1pSprpg3ZnjDkmmZntARNSv00XeZFaaypP0lolaSBob6UuutrHearlBa6d5f00lBLJ0Etz"
     const [stripeToken,setStripeToken]=useState(null);
     const [amount,setAmount]=useState((cart.total && cart.total / 181.85) * 100);
@@ -167,7 +174,11 @@ function Cart() {
         };
        stripeToken && makeRequest();
     },[stripeToken,cart.total])
-    console.log(amount)
+    // const deleteProduct=(e)=>{
+    //     e.preventDefault();
+        
+
+    // }
     return (
         <Container>
             <Navbar />
@@ -190,7 +201,7 @@ function Cart() {
 
                             <Product key={p._id} >
                                 <ProductDetail>
-                                    <Image src={p.img} />
+                                    <Image src={url + p.img} />
                                     <Details>
                                         <ProductName><b>PRODUCT:</b>{p.title}</ProductName>
                                         <ProductId><b>ID:</b>{p._id}</ProductId>
@@ -206,6 +217,18 @@ function Cart() {
                                     </ProductAmountContainer>
                                     <ProductPrice>{p.price * p.quantity}</ProductPrice>
                                 </PriceDetail>
+                                <div>
+                                    <button 
+                                    style={{padding:'10px',cursor:'pointer',borderRadius:'10px',backgroundColor:'teal',color:'white',border:'none'}} 
+                                    onClick={()=>{
+                                        dispatch(deleteProduct(p))
+                                    }
+                                    }
+                                     > 
+                                     {p._id}
+                                      </button>
+                                </div>
+                                
                             </Product>
                     ))}
                             <Hr />
@@ -222,6 +245,10 @@ function Cart() {
                             <SummaryItemText>Total</SummaryItemText>
                             <SummaryItemPrice>{cart.total} PKR</SummaryItemPrice>
                         </SummaryItem>
+                        {user === null ?
+                        <Button disabled >CheckOut Now</Button>
+                            :
+
                         <StripeCheckout
                         name='Online Store'
                         image='/assets/img/logo.png'
@@ -231,9 +258,10 @@ function Cart() {
                         token={onToken}
                         amount={(cart.total / 181.85) * 100 }
                         stripeKey={stripeKey}
-                    >
+                        >
                         <Button>CheckOut Now</Button>
                         </StripeCheckout>
+                    }
                     </Summary>
                 </Bottom>
             </Wrapper>

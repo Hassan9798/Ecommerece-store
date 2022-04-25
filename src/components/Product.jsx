@@ -41,6 +41,7 @@ const Info=styled.div`
     width:80%;
     background-color:white;
     z-index:2;
+    object-fit:contain;
     
     `
     
@@ -61,9 +62,10 @@ const Info=styled.div`
     }
     `
 function Product({product}) {
+    const url='http://localhost:4000/';
   return (
     <Container>
-        <Img src={product.img}/>
+        <Img src={url + product.img}/>
         <Info>
         <Link to={`/product/${product._id}`}>
             <Icon>
